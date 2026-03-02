@@ -1,15 +1,15 @@
 name: Build Mac Version
-on: [push] # This triggers the build every time you save
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated from v3
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Updated from v4
         with:
           python-version: '3.9'
 
@@ -19,11 +19,11 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          # We use --windowed so it looks like a real Mac App
+          # Quotes handle the space in "Agent tracker.py"
           pyinstaller --noconsole --onefile --windowed --name "504_Digital_Tracker" "Agent tracker.py"
 
       - name: Upload Finished App
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # Updated from v3 - THIS WAS THE ERROR
         with:
           name: Mac-Tracker-App
           path: dist/504_Digital_Tracker.app
