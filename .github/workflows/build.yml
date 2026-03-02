@@ -1,0 +1,29 @@
+name: Build Mac Version
+on: [push] # This triggers the build every time you save
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install pyautogui requests pynput Pillow pyinstaller
+
+      - name: Build with PyInstaller
+        run: |
+          # We use --windowed so it looks like a real Mac App
+          pyinstaller --noconsole --onefile --windowed --name "504_Digital_Tracker" "Agent tracker.py"
+
+      - name: Upload Finished App
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mac-Tracker-App
+          path: dist/504_Digital_Tracker.app
