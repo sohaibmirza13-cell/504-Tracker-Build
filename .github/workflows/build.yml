@@ -15,17 +15,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyautogui requests pynput Pillow pyinstaller
+          pip install requests pynput Pillow pyinstaller pyautogui --no-dependencies
 
       - name: Build with PyInstaller
         run: |
-          # This command finds the .py file even if the name is slightly different
           PYTHON_FILE=$(ls *.py | head -n 1)
-          echo "Building with file: $PYTHON_FILE"
-          pyinstaller --noconsole --onefile --windowed --name "504_Digital_Tracker" "$PYTHON_FILE"
+          python3 -m PyInstaller --noconsole --onefile --windowed --name "504_Tracker" "$PYTHON_FILE"
 
-      - name: Upload Finished App
+      - name: Fix Permissions and Zip ON THE MAC SERVER
+        run: |
+          # This gives the internal file permission to run
+          chmod +x dist/504_Tracker.app/Contents/MacOS/504_Tracker
+          # This zips the folder while still on a Mac system to save that permission
+          cd dist && zip -r ../504_Tracker_Mac_Ready.zip 504_Tracker.app
+
+      - name: Upload Finished ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: Mac-Tracker-App
-          path: dist/504_Digital_Tracker.app
+          name: Mac-Tracker-Ready-To-Use
+          path: 504_Tracker_Mac_Ready.zip
