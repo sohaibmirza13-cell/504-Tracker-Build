@@ -6,10 +6,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Updated from v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # Updated from v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -19,11 +19,13 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          # Quotes handle the space in "Agent tracker.py"
-          pyinstaller --noconsole --onefile --windowed --name "504_Digital_Tracker" "Agent tracker.py"
+          # This command finds the .py file even if the name is slightly different
+          PYTHON_FILE=$(ls *.py | head -n 1)
+          echo "Building with file: $PYTHON_FILE"
+          pyinstaller --noconsole --onefile --windowed --name "504_Digital_Tracker" "$PYTHON_FILE"
 
       - name: Upload Finished App
-        uses: actions/upload-artifact@v4 # Updated from v3 - THIS WAS THE ERROR
+        uses: actions/upload-artifact@v4
         with:
           name: Mac-Tracker-App
           path: dist/504_Digital_Tracker.app
